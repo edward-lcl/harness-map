@@ -72,9 +72,11 @@ def call_model(
     payload = {
         "model": model,
         "max_tokens": max_tokens,
-        "temperature": temperature,
         "messages": [{"role": "user", "content": prompt}],
     }
+    # Opus 4.7 deprecated temperature parameter; skip it for Opus models
+    if not model.startswith("claude-opus"):
+        payload["temperature"] = temperature
     headers = {
         "Content-Type": "application/json",
         "anthropic-version": "2023-06-01",
