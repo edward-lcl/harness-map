@@ -5,9 +5,9 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "watcher"))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from prompt_diff import classify
+from harness_map.watcher.differ import classify
 
 
 def test_new_file_is_material():

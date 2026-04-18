@@ -1,0 +1,143 @@
+# PromptChangeEvent Schema
+# AI System Harness Intelligence Layer (L1–L2 drift)
+# Source: harness-map/watcher
+#
+# Version: 1.0.0
+# Created: 2026-04-18
+
+---
+
+schema:
+  name: PromptChangeEvent
+  version: "1.0.0"
+  description: >
+    A first-class event describing a meaningful change between two PromptArtifact
+    versions for a single HarnessSurface. Analogous to StructuralDriftEvent but
+    for prompt content. Emitted when a new PromptArtifact supersedes an older one.
+
+  fields:
+    id:
+      type: string
+      required: true
+      description: "prompt-change-{surface_slug}-{prev_sha}-{new_sha}"
+      example: "prompt-change-claude-design-a1b2c3d4-e5f6g7h8"
+
+    type:
+      type: string
+      required: true
+      const: "PromptChangeEvent"
+
+    harness_surface_ref:
+      type: string
+      required: true
+
+    previous_artifact_ref:
+      type: string
+      required: false
+      description: "Null if this is the first observation (new surface)"
+
+    current_artifact_ref:
+      type: string
+      required: true
+
+    previous_upstream_sha:
+      type: string
+      required: false
+
+    current_upstream_sha:
+      type: string
+      required: true
+
+    change_class:
+      type: string
+      required: true
+      enum: ["new_surface", "material", "minor", "removed"]
+
+    change_reasons:
+      type: array
+      required: true
+      items:
+        type: string
+      description: "e.g. ['new_file', 'size_delta_25%', 'new_tools', 'safety_rule_changed']"
+
+    deltas:
+      type: object
+      required: true
+      fields:
+        size_bytes:
+          type: integer
+        size_fraction:
+          type: number
+        new_sections:
+          type: array
+          items:
+            type: string
+        removed_sections:
+          type: array
+          items:
+            type: string
+        new_tools:
+          type: array
+          items:
+            type: string
+        removed_tools:
+          type: array
+          items:
+            type: string
+        safety_rule_changes:
+          type: array
+          items:
+            type: string
+
+    unified_diff:
+      type: string
+      required: false
+      description: "Truncated unified diff for compact storage"
+
+    unified_diff_path:
+      type: string
+      required: false
+      description: "Relative path to full diff file in harness-map repo"
+
+    interpretation:
+      type: array
+      required: false
+      items:
+        type: string
+      description: "Human-readable explanation of what changed"
+
+    severity:
+      type: string
+      required: true
+      enum: ["critical", "high", "moderate", "low"]
+
+    provenance:
+      type: object
+      required: true
+
+    created_at:
+      type: string
+      format: datetime
+      required: true
+
+    updated_at:
+      type: string
+      format: datetime
+      required: true
+
+    boundary:
+      type: string
+      default: "node-levi"
+
+    scope:
+      type: string
+      default: "research"
+
+    base_type:
+      type: string
+      default: "Entity"
+
+  storage:
+    base_path: "ontology/entities/prompt_change_events"
+    format: "yaml"
+    id_pattern: "prompt-change-{surface_slug}-{prev_sha_prefix}-{new_sha_prefix}"

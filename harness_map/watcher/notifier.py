@@ -1,16 +1,12 @@
-"""Discord webhook notification for material prompt changes."""
+"""Discord webhook notification for material prompt changes (moved from flat script)."""
 
 from __future__ import annotations
 
-import os
-import json
 from typing import Optional
 
 import requests
 
-
-def _webhook_url() -> Optional[str]:
-    return os.environ.get("HARNESS_MAP_DISCORD_WEBHOOK", "").strip() or None
+from ..core.config import discord_webhook
 
 
 def notify(
@@ -18,28 +14,18 @@ def notify(
     title: str,
     description: str,
     fields: list[dict] | None = None,
-    color: int = 0x3b82f6,  # blue
+    color: int = 0x3b82f6,
 ) -> bool:
-    """Post a material-change notification. Returns True on success.
-
-    Silent no-op if webhook env var not set (keeps dev/test from spamming).
-    """
-    url = _webhook_url()
+    url = discord_webhook()
     if not url:
         print(f"[notify] HARNESS_MAP_DISCORD_WEBHOOK not set; skipping: {title}")
         return False
 
-    # Discord limits: title 256, description 4096, field.value 1024, total 6000
     title = title[:256]
     description = description[:4000]
 
-    embed = {
-        "title": title,
-        "description": description,
-        "color": color,
-    }
+    embed = {"title": title, "description": description, "color": color}
     if fields:
-        # Clamp field values
         clamped = []
         for f in fields[:25]:
             clamped.append({
@@ -49,9 +35,8 @@ def notify(
             })
         embed["fields"] = clamped
 
-    payload = {"embeds": [embed]}
     try:
-        resp = requests.post(url, json=payload, timeout=10)
+        resp = requests.post(url, json={"embeds": [embed]}, timeout=10)
         if resp.status_code >= 400:
             print(f"[notify] Discord returned {resp.status_code}: {resp.text[:200]}")
             return False
@@ -61,8 +46,9 @@ def notify(
         return False
 
 
-def format_material_change(
+def format_prompt_change(
     *,
+    surface_display_name: str,
     filename: str,
     reasons: list[str],
     new_tools: list[str],
@@ -71,22 +57,27 @@ def format_material_change(
     old_size: int,
     new_size: int,
     raw_url: str,
+    severity: str,
+    event_id: str,
 ) -> dict:
-    """Build title/description/fields for a material change notification."""
     if "new_file" in reasons:
-        title = f"🆕 New Anthropic prompt leaked: {filename}"
-        color = 0x10b981  # green
+        title = f"🆕 New prompt observed: {surface_display_name}"
+        color = 0x10b981
     elif "safety_rule_changed" in reasons:
-        title = f"⚠️ Safety rules changed in {filename}"
-        color = 0xef4444  # red
+        title = f"⚠️ Safety rules changed: {surface_display_name}"
+        color = 0xef4444
     elif "new_tools" in reasons:
-        title = f"🔧 New tools in {filename}"
-        color = 0xf59e0b  # amber
+        title = f"🔧 New tools in: {surface_display_name}"
+        color = 0xf59e0b
     else:
-        title = f"📝 {filename} updated"
-        color = 0x3b82f6  # blue
+        title = f"📝 Updated: {surface_display_name}"
+        color = 0x3b82f6
 
-    description = f"Material change detected. Reasons: `{', '.join(reasons)}`\nSize: {old_size} → {new_size} bytes"
+    description = (
+        f"**Severity:** `{severity}` · **Reasons:** `{', '.join(reasons)}`\n"
+        f"**Size:** {old_size:,} → {new_size:,} bytes\n"
+        f"**Event:** `{event_id}`"
+    )
 
     fields = []
     if new_tools:
@@ -103,13 +94,13 @@ def format_material_change(
         })
     if safety_changes:
         fields.append({
-            "name": f"Safety rule changes (top {min(6, len(safety_changes))})",
+            "name": f"Safety rule changes ({min(6, len(safety_changes))} shown)",
             "value": "\n".join(safety_changes[:6])[:1024] or "none",
             "inline": False,
         })
     fields.append({
         "name": "Source",
-        "value": raw_url,
+        "value": f"[`{filename}`]({raw_url})",
         "inline": False,
     })
 

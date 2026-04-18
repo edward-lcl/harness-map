@@ -1,0 +1,119 @@
+# HarnessSurface Schema
+# AI System Harness Intelligence Layer (L1–L7)
+# Source: harness-map
+#
+# Version: 1.0.0
+# Created: 2026-04-18
+
+---
+
+schema:
+  name: HarnessSurface
+  version: "1.0.0"
+  description: >
+    A first-class ontology entity representing a named AI system surface —
+    a deployed harness configuration built around one or more base models.
+    Examples: claude-design, claude-code, claude-opus-4-7-consumer, mythos.
+
+    A HarnessSurface is the unit we monitor. It has prompt artifacts (L1–L2),
+    tool surfaces (L3), skills (L4), orchestration (L5), behavioral training (L6),
+    and classifier wrappers (L7) attached via other entities and events.
+
+  fields:
+    id:
+      type: string
+      required: true
+      description: "harness-{vendor}-{surface_slug}"
+      example: "harness-anthropic-claude-design"
+
+    type:
+      type: string
+      required: true
+      const: "HarnessSurface"
+
+    surface_slug:
+      type: string
+      required: true
+      description: "Stable slug, lowercase with hyphens"
+      example: "claude-design"
+
+    vendor:
+      type: string
+      required: true
+      enum: ["anthropic", "openai", "google", "xai", "meta", "other"]
+
+    display_name:
+      type: string
+      required: true
+
+    surface_type:
+      type: string
+      required: true
+      enum: ["consumer-assistant", "design-tool", "code-agent", "api-model", "specialized-agent", "other"]
+
+    base_models:
+      type: array
+      required: false
+      description: "Model identifiers this surface wraps (e.g., claude-opus-4-7)"
+      items:
+        type: string
+
+    first_observed_at:
+      type: string
+      format: datetime
+      required: true
+      description: "When we first captured evidence of this surface"
+
+    last_observed_at:
+      type: string
+      format: datetime
+      required: true
+
+    notes:
+      type: string
+      required: false
+
+    provenance:
+      type: object
+      required: true
+      fields:
+        source_system:
+          type: string
+          enum: ["harness-map"]
+        source_kind:
+          type: string
+        captured_at:
+          type: string
+          format: datetime
+        captured_by:
+          type: string
+
+    created_at:
+      type: string
+      format: datetime
+      required: true
+
+    updated_at:
+      type: string
+      format: datetime
+      required: true
+
+    boundary:
+      type: string
+      required: true
+      default: "node-levi"
+
+    scope:
+      type: string
+      required: true
+      default: "research"
+
+    base_type:
+      type: string
+      required: true
+      default: "Entity"
+
+  storage:
+    base_path: "ontology/entities/harness_surfaces"
+    format: "yaml"
+    id_pattern: "harness-{vendor}-{surface_slug}"

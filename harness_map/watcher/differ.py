@@ -1,8 +1,4 @@
-"""Diff generation + material-change classification.
-
-Given old_content and new_content, produces unified diff + classification
-of whether the change is "material" (notify) or "log-only" (changelog only).
-"""
+"""Diff generation + material-change classification (moved from flat script)."""
 
 from __future__ import annotations
 
@@ -12,10 +8,9 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 
-MATERIAL_SIZE_DELTA_FRACTION = 0.20  # 20% size change is material
+MATERIAL_SIZE_DELTA_FRACTION = 0.20
 
 
-# Patterns that suggest safety-relevant text
 SAFETY_KEYWORDS = [
     r"\brefuse\b", r"\bdecline\b", r"\bdisallow\b",
     r"\bsafety\b", r"\bharm\b", r"\bdanger\b",
@@ -26,10 +21,7 @@ SAFETY_KEYWORDS = [
     r"\bnever\b(?= (?:divulge|reveal|share|discuss))",
 ]
 
-# Section header patterns (markdown + prose)
 SECTION_PATTERN = re.compile(r"^(#{1,4}\s+.+|[A-Z][A-Za-z ]{3,60}:)\s*$", re.MULTILINE)
-
-# Tool/function mention — crude but catches most cases
 TOOL_PATTERN = re.compile(
     r"\b(?:call|invoke|use|the)\s+`?([a-z_][a-zA-Z0-9_]{2,})`?\s+(?:tool|function|skill)\b"
     r"|`([a-z_][a-zA-Z0-9_]{2,})\(`"
@@ -67,13 +59,12 @@ def _extract_tools(text: str) -> set:
 
 
 def _safety_line_diff(old: str, new: str) -> List[str]:
-    """Return safety-relevant lines that appear in new but not old, or vice versa."""
     old_lines = set(old.splitlines())
     new_lines = set(new.splitlines())
     added = new_lines - old_lines
     removed = old_lines - new_lines
     changes = []
-    for line in list(added)[:20]:  # cap for readability
+    for line in list(added)[:20]:
         if any(re.search(p, line, re.IGNORECASE) for p in SAFETY_KEYWORDS):
             changes.append(f"+ {line.strip()[:200]}")
     for line in list(removed)[:20]:
@@ -83,13 +74,10 @@ def _safety_line_diff(old: str, new: str) -> List[str]:
 
 
 def classify(old_content: Optional[str], new_content: str) -> DiffResult:
-    """Classify a change as material or log-only."""
     if old_content is None:
-        # New file
         return DiffResult(
             unified_diff="",
-            old_size=0,
-            new_size=len(new_content),
+            old_size=0, new_size=len(new_content),
             size_delta_fraction=1.0,
             material=True,
             reasons=["new_file"],
@@ -129,20 +117,15 @@ def classify(old_content: Optional[str], new_content: str) -> DiffResult:
         reasons.append("safety_rule_changed")
 
     unified = "\n".join(difflib.unified_diff(
-        old_content.splitlines(),
-        new_content.splitlines(),
-        lineterm="",
-        n=2,
+        old_content.splitlines(), new_content.splitlines(),
+        lineterm="", n=2,
     ))
-
-    material = bool(reasons)
 
     return DiffResult(
         unified_diff=unified,
-        old_size=old_size,
-        new_size=new_size,
+        old_size=old_size, new_size=new_size,
         size_delta_fraction=size_delta,
-        material=material,
+        material=bool(reasons),
         reasons=reasons,
         new_sections=added_sections[:20],
         removed_sections=removed_sections[:20],
@@ -150,3 +133,20 @@ def classify(old_content: Optional[str], new_content: str) -> DiffResult:
         removed_tools=removed_tools[:30],
         safety_changes=safety_changes,
     )
+
+
+def severity_from_reasons(reasons: List[str], size_delta: float) -> str:
+    """Map change reasons to severity levels used by the PromptChangeEvent schema."""
+    if "new_file" in reasons:
+        return "moderate"  # new surface is notable but not alarming
+    if "safety_rule_changed" in reasons:
+        return "high"
+    if "new_tools" in reasons or "removed_tools" in reasons:
+        return "high"
+    if size_delta >= 0.50:
+        return "high"
+    if "sections_changed" in reasons:
+        return "moderate"
+    if size_delta >= 0.20:
+        return "moderate"
+    return "low"

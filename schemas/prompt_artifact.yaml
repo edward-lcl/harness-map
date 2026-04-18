@@ -1,0 +1,127 @@
+# PromptArtifact Schema
+# AI System Harness Intelligence Layer (L1–L2)
+# Source: harness-map/watcher
+#
+# Version: 1.0.0
+# Created: 2026-04-18
+
+---
+
+schema:
+  name: PromptArtifact
+  version: "1.0.0"
+  description: >
+    A captured system prompt for a HarnessSurface at a specific point in time.
+    Represents L1 (published) or L2 (leaked) content. One artifact per unique
+    (surface, upstream_sha) tuple. Replaced by a new artifact when upstream changes.
+
+  fields:
+    id:
+      type: string
+      required: true
+      description: "prompt-{surface_slug}-{fetched_date}-{sha_prefix}"
+      example: "prompt-claude-design-20260418-1a55b8aa"
+
+    type:
+      type: string
+      required: true
+      const: "PromptArtifact"
+
+    harness_surface_ref:
+      type: string
+      required: true
+      description: "ID of the HarnessSurface this artifact belongs to"
+
+    layer:
+      type: string
+      required: true
+      enum: ["L1", "L2"]
+      description: "L1 = published by vendor, L2 = leaked/extracted externally"
+
+    source_url:
+      type: string
+      required: true
+
+    upstream_sha:
+      type: string
+      required: true
+      description: "Content SHA from upstream source (GitHub blob SHA for L2)"
+
+    content_hash:
+      type: string
+      required: false
+      description: "Our own sha256 of content bytes for integrity check"
+
+    raw_path:
+      type: string
+      required: true
+      description: "Relative path to raw content file within harness-map repo"
+
+    metadata:
+      type: object
+      required: true
+      description: "Pattern-extracted metadata (no LLM processing)"
+      fields:
+        raw_size_bytes:
+          type: integer
+        raw_line_count:
+          type: integer
+        raw_word_count:
+          type: integer
+        section_count:
+          type: integer
+        sections:
+          type: array
+          items:
+            type: string
+        tools_mentioned:
+          type: array
+          items:
+            type: string
+        safety_rule_count:
+          type: integer
+        model_hints:
+          type: array
+          items:
+            type: string
+
+    fetched_at:
+      type: string
+      format: datetime
+      required: true
+
+    supersedes_ref:
+      type: string
+      required: false
+      description: "Previous PromptArtifact for this surface, if any"
+
+    provenance:
+      type: object
+      required: true
+
+    created_at:
+      type: string
+      format: datetime
+      required: true
+
+    updated_at:
+      type: string
+      format: datetime
+      required: true
+
+    boundary:
+      type: string
+      default: "node-levi"
+
+    scope:
+      type: string
+      default: "research"
+
+    base_type:
+      type: string
+      default: "Entity"
+
+  storage:
+    base_path: "ontology/entities/prompt_artifacts"
+    format: "yaml"
+    id_pattern: "prompt-{surface_slug}-{fetched_date}-{sha_prefix}"

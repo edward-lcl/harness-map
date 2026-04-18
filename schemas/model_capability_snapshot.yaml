@@ -1,0 +1,127 @@
+# ModelCapabilitySnapshot Schema
+# AI System Harness Intelligence Layer (L6 — training-baked behaviors)
+# Source: harness-map/probe
+#
+# Version: 1.0.0
+# Created: 2026-04-18
+
+---
+
+schema:
+  name: ModelCapabilitySnapshot
+  version: "1.0.0"
+  description: >
+    Aggregated result of running a behavioral probe battery against a specific
+    model at a specific time. Captures the summary stats and pointers to the
+    individual probe responses. One snapshot per (model, battery_version, run_ts).
+
+  fields:
+    id:
+      type: string
+      required: true
+      description: "capsnap-{model_slug}-{battery_version}-{run_ts_compact}"
+      example: "capsnap-claude-haiku-4-5-20260418-b10f7ecb-20260418T183905Z"
+
+    type:
+      type: string
+      required: true
+      const: "ModelCapabilitySnapshot"
+
+    harness_surface_ref:
+      type: string
+      required: true
+      description: "The HarnessSurface (model) this probed"
+
+    model_slug:
+      type: string
+      required: true
+
+    model_returned:
+      type: string
+      required: false
+      description: "The exact model string the API returned"
+
+    battery_version:
+      type: string
+      required: true
+      description: "Version hash of the probe corpus used"
+
+    battery_probe_count:
+      type: integer
+      required: true
+
+    probes_completed:
+      type: integer
+      required: true
+
+    probes_errored:
+      type: integer
+      required: true
+
+    temperature:
+      type: number
+      required: true
+
+    max_tokens:
+      type: integer
+      required: true
+
+    totals:
+      type: object
+      required: true
+      fields:
+        tokens_in:
+          type: integer
+        tokens_out:
+          type: integer
+        latency_ms_sum:
+          type: integer
+        latency_ms_avg:
+          type: number
+        refusals:
+          type: integer
+
+    by_category:
+      type: object
+      required: true
+      description: "Per-category counts: probes, refusals, errors"
+
+    results_jsonl_path:
+      type: string
+      required: true
+      description: "Relative path to full JSONL results in harness-map repo"
+
+    run_ts:
+      type: string
+      format: datetime
+      required: true
+
+    provenance:
+      type: object
+      required: true
+
+    created_at:
+      type: string
+      format: datetime
+      required: true
+
+    updated_at:
+      type: string
+      format: datetime
+      required: true
+
+    boundary:
+      type: string
+      default: "node-levi"
+
+    scope:
+      type: string
+      default: "research"
+
+    base_type:
+      type: string
+      default: "Entity"
+
+  storage:
+    base_path: "ontology/entities/model_capability_snapshots"
+    format: "yaml"

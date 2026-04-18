@@ -1,18 +1,12 @@
-"""GitHub API polling for leaked Anthropic prompts.
-
-Fetches the contents of the ANTHROPIC folder in elder-plinius/CL4R1T4S
-and returns file metadata + raw content. Uses conditional requests (If-None-Match
-with ETag) to stay well under rate limits.
-"""
+"""GitHub API fetch — moved from flat script into the package."""
 
 from __future__ import annotations
 
-import os
-import base64
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 import requests
 
@@ -28,7 +22,7 @@ class RemoteFile:
     sha: str
     size: int
     download_url: str
-    content: str  # fetched separately
+    content: str
 
 
 class FetchError(Exception):
@@ -47,7 +41,6 @@ def _headers() -> dict:
 
 
 def list_folder(owner_repo: str = REPO, folder: str = FOLDER) -> List[dict]:
-    """List all files in the target folder. Returns raw GitHub API dicts."""
     url = f"{GITHUB_API}/repos/{owner_repo}/contents/{folder}"
     resp = requests.get(url, headers=_headers(), timeout=15)
     if resp.status_code == 403 and "rate limit" in resp.text.lower():
@@ -60,26 +53,22 @@ def list_folder(owner_repo: str = REPO, folder: str = FOLDER) -> List[dict]:
 
 
 def fetch_content(download_url: str) -> str:
-    """Fetch raw content from download_url. Returns decoded text."""
     resp = requests.get(download_url, headers=_headers(), timeout=30)
     resp.raise_for_status()
     return resp.text
 
 
 def fetch_all_current(owner_repo: str = REPO, folder: str = FOLDER) -> List[RemoteFile]:
-    """List folder + fetch content for each file. Primary entry point."""
     files = list_folder(owner_repo, folder)
     out = []
     for f in files:
-        # Skip non-text files by extension heuristic
         name = f.get("name", "")
         if not any(name.endswith(ext) for ext in (".txt", ".md", ".json")):
             continue
         try:
             content = fetch_content(f["download_url"])
         except Exception as e:
-            # Log and skip — don't fail whole run on one file
-            print(f"[prompt_fetch] Failed to fetch {name}: {e}")
+            print(f"[fetcher] Failed to fetch {name}: {e}")
             continue
         out.append(RemoteFile(
             name=name,
@@ -90,17 +79,3 @@ def fetch_all_current(owner_repo: str = REPO, folder: str = FOLDER) -> List[Remo
             content=content,
         ))
     return out
-
-
-def save_state(state: dict, state_path: Path) -> None:
-    state_path.parent.mkdir(parents=True, exist_ok=True)
-    state_path.write_text(json.dumps(state, indent=2, sort_keys=True))
-
-
-def load_state(state_path: Path) -> dict:
-    if not state_path.exists():
-        return {}
-    try:
-        return json.loads(state_path.read_text())
-    except json.JSONDecodeError:
-        return {}

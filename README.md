@@ -73,6 +73,45 @@ Prompt-layer and training-layer decisions at frontier labs diffuse through the e
 
 TBD — not currently public. See `NOTICE.md` when the repo opens.
 
+## Architecture
+
+```
+harness-map/
+  harness_map/              # Python package
+    core/                   # BaseEntity + typed entities, ontology client, config, surface registry
+    watcher/                # Fetcher, differ, extractor, notifier, orchestrator
+    probe/                  # Loader, client, runner
+  bin/                      # CLI entry points (watch.py, probe.py)
+  schemas/                  # YAML schemas matching workspace ontology conventions
+  tests/                    # pytest suite
+  data/anthropic-prompts/   # Raw prompt captures + diffs
+  probe/                    # Probe corpus YAML + JSONL results + frozen battery versions
+```
+
+All durable findings land as typed entities in `~/.openclaw/workspace/ontology/entities/`:
+- `HarnessSurface` — each named AI system surface (claude-design, claude-opus-4-7-consumer, claude-haiku-4-5-api, etc.)
+- `PromptArtifact` — every captured version of a system prompt
+- `PromptChangeEvent` — diffs with severity + interpretation
+- `ModelCapabilitySnapshot` — probe battery run aggregates
+- `BehavioralDriftEvent` — diffs across snapshots (Phase 1 Week 3)
+
+Entities integrate with the existing workspace ontology substrate — queryable alongside every other entity type.
+
+## Usage
+
+```bash
+# Run watcher (cron runs this hourly)
+python3 bin/watch.py [--silent]
+
+# Run probe battery
+python3 bin/probe.py --model claude-haiku-4-5
+python3 bin/probe.py --model claude-opus-4-7 --categories persona,identity
+python3 bin/probe.py --model claude-sonnet-4-6 --limit 10 --quiet
+
+# Tests
+python3 -m pytest tests/ -v
+```
+
 ## Related
 
 - `/mnt/volume_nyc3_01/obsidian-vault/blueprint/Projects/Wisdom Architecture/Harness Map Program.md` — master program doc

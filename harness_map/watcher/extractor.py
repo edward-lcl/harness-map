@@ -1,12 +1,8 @@
-"""Structured metadata extraction from leaked system prompts.
-
-Pattern-based, not LLM-based — gives us injection-safe extraction.
-"""
+"""Pattern-based metadata extraction (injection-safe, no LLM)."""
 
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, asdict
 from typing import List
 
 
@@ -31,31 +27,8 @@ MODEL_IDENT = re.compile(
 )
 
 
-@dataclass
-class PromptMetadata:
-    surface: str
-    source_url: str
-    upstream_sha: str
-    fetched_at: str
-    raw_size_bytes: int
-    raw_line_count: int
-    raw_word_count: int
-    section_count: int
-    sections: List[str]
-    tools_mentioned: List[str]
-    safety_rule_count: int
-    model_hints: List[str]
-
-
-def extract(
-    *,
-    content: str,
-    surface: str,
-    source_url: str,
-    upstream_sha: str,
-    fetched_at: str,
-) -> dict:
-    """Pattern-based metadata extraction. Does NOT invoke any LLM."""
+def extract_metadata(content: str) -> dict:
+    """Pattern-based. Does NOT invoke any LLM. Safe against prompt-injection content."""
     sections_md = [m.group(2).strip() for m in SECTION_PATTERN.finditer(content)]
     sections_prose = [m.group(1).strip() for m in PROSE_SECTION_PATTERN.finditer(content)]
     sections = sections_md + sections_prose
@@ -72,32 +45,22 @@ def extract(
 
     models = set()
     for m in MODEL_IDENT.finditer(content):
-        models.add(m.group(0).lower())
+        models.add(m.group(0).lower().strip())
 
-    meta = PromptMetadata(
-        surface=surface,
-        source_url=source_url,
-        upstream_sha=upstream_sha,
-        fetched_at=fetched_at,
-        raw_size_bytes=len(content.encode("utf-8")),
-        raw_line_count=content.count("\n") + 1,
-        raw_word_count=len(content.split()),
-        section_count=len(sections),
-        sections=sections[:50],  # cap for readability
-        tools_mentioned=sorted(tools)[:50],
-        safety_rule_count=safety_hits,
-        model_hints=sorted(models)[:10],
-    )
-    return asdict(meta)
+    return {
+        "raw_size_bytes": len(content.encode("utf-8")),
+        "raw_line_count": content.count("\n") + 1,
+        "raw_word_count": len(content.split()),
+        "section_count": len(sections),
+        "sections": sections[:50],
+        "tools_mentioned": sorted(tools)[:50],
+        "safety_rule_count": safety_hits,
+        "model_hints": sorted(models)[:10],
+    }
 
 
-def sanitize(content: str) -> str:
-    """Strip known prompt-injection markers BEFORE passing content to any LLM.
-
-    Pattern extraction above is safe without this because it's pure regex.
-    Call this only if you plan to summarize via LLM later.
-    """
-    # Leetspeak directives (Pliny's README style)
+def sanitize_for_llm(content: str) -> str:
+    """Strip known prompt-injection markers before any LLM processing."""
     patterns = [
         r"<NEW_PARADIGM>",
         r"#MOST IMPORTANT DIRECTIVE#",

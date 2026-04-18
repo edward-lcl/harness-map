@@ -1,0 +1,111 @@
+# BehavioralDriftEvent Schema
+# AI System Harness Intelligence Layer (L6 — behavior drift)
+# Source: harness-map/probe
+#
+# Version: 1.0.0
+# Created: 2026-04-18
+
+---
+
+schema:
+  name: BehavioralDriftEvent
+  version: "1.0.0"
+  description: >
+    A first-class event describing meaningful behavioral drift between two
+    ModelCapabilitySnapshots of the same model (or between two sibling models).
+    Emitted by the differ when probe-level changes cross significance thresholds.
+
+  fields:
+    id:
+      type: string
+      required: true
+      example: "behavior-drift-claude-haiku-4-5-20260418-20260425"
+
+    type:
+      type: string
+      required: true
+      const: "BehavioralDriftEvent"
+
+    harness_surface_ref:
+      type: string
+      required: true
+
+    previous_snapshot_ref:
+      type: string
+      required: true
+
+    current_snapshot_ref:
+      type: string
+      required: true
+
+    comparison_kind:
+      type: string
+      required: true
+      enum: ["temporal", "cross-model"]
+      description: "temporal = same model over time, cross-model = different models now"
+
+    drift_by_category:
+      type: object
+      required: true
+      description: "Per-category drift scores (0.0 stable — 1.0 complete divergence)"
+
+    notable_probe_drifts:
+      type: array
+      required: false
+      description: "Individual probes that shifted meaningfully"
+      items:
+        type: object
+        fields:
+          prompt_id:
+            type: string
+          drift_type:
+            type: string
+            enum: ["refused_now_allowed", "allowed_now_refused", "length_delta", "identity_change", "response_changed"]
+          summary:
+            type: string
+
+    aggregate_drift_score:
+      type: number
+      required: true
+      description: "0.0 stable — 1.0 complete divergence"
+
+    severity:
+      type: string
+      required: true
+      enum: ["critical", "high", "moderate", "low"]
+
+    interpretation:
+      type: array
+      required: false
+      items:
+        type: string
+
+    provenance:
+      type: object
+      required: true
+
+    created_at:
+      type: string
+      format: datetime
+      required: true
+
+    updated_at:
+      type: string
+      format: datetime
+      required: true
+
+    boundary:
+      type: string
+      default: "node-levi"
+
+    scope:
+      type: string
+      default: "research"
+
+    base_type:
+      type: string
+      default: "Entity"
+
+  storage:
+    base_path: "ontology/entities/behavioral_drift_events"
+    format: "yaml"
