@@ -43,9 +43,22 @@ from .notifier import notify, format_prompt_change
 
 
 REPO_ROOT = Path(__file__).parent.parent.parent
-DATA_DIR = REPO_ROOT / "data" / "anthropic-prompts"
-RAW_DIR = DATA_DIR / "raw"
-DIFF_DIR = DATA_DIR / "diffs"
+
+
+def _data_dir() -> Path:
+    """Respect HARNESS_MAP_DATA_ROOT for test isolation; default to repo data/."""
+    import os
+    override = os.environ.get("HARNESS_MAP_DATA_ROOT", "").strip()
+    base = Path(override) if override else REPO_ROOT / "data"
+    return base / "anthropic-prompts"
+
+
+def _raw_dir() -> Path:
+    return _data_dir() / "raw"
+
+
+def _diff_dir() -> Path:
+    return _data_dir() / "diffs"
 
 
 @dataclass
@@ -75,20 +88,22 @@ def _safe_filename(name: str) -> str:
 
 
 def _write_raw(filename: str, sha: str, content: str, fetched_at: str) -> Path:
-    RAW_DIR.mkdir(parents=True, exist_ok=True)
+    raw_dir = _raw_dir()
+    raw_dir.mkdir(parents=True, exist_ok=True)
     date_tag = fetched_at[:10]
     safe = _safe_filename(filename)
-    path = RAW_DIR / f"{safe}__{date_tag}__{sha[:8]}"
+    path = raw_dir / f"{safe}__{date_tag}__{sha[:8]}"
     if not path.exists():
         path.write_text(content, encoding="utf-8")
     return path
 
 
 def _write_diff(filename: str, prev_sha: str, new_sha: str, diff_text: str, fetched_at: str) -> Path:
-    DIFF_DIR.mkdir(parents=True, exist_ok=True)
+    diff_dir = _diff_dir()
+    diff_dir.mkdir(parents=True, exist_ok=True)
     date_tag = fetched_at[:10]
     safe = _safe_filename(filename)
-    path = DIFF_DIR / f"{safe}__{date_tag}__{prev_sha[:8]}__{new_sha[:8]}.diff"
+    path = diff_dir / f"{safe}__{date_tag}__{prev_sha[:8]}__{new_sha[:8]}.diff"
     path.write_text(diff_text, encoding="utf-8")
     return path
 
@@ -178,13 +193,20 @@ class Orchestrator:
         raw_path = _write_raw(rf.name, rf.sha, rf.content, fetched_at)
         content_hash = sha256_hex(rf.content, length=16)
 
+        # raw_path stored as relative to the data root (not REPO_ROOT) so
+        # tests using HARNESS_MAP_DATA_ROOT override stay isolated.
+        try:
+            raw_path_ref = str(raw_path.relative_to(REPO_ROOT))
+        except ValueError:
+            raw_path_ref = str(raw_path)
+
         artifact = PromptArtifact(
             harness_surface_ref=surface.id,
             layer="L2",
             source_url=rf.download_url,
             upstream_sha=rf.sha,
             content_hash=content_hash,
-            raw_path=str(raw_path.relative_to(REPO_ROOT)),
+            raw_path=raw_path_ref,
             metadata=metadata,
             fetched_at=fetched_at,
             supersedes_ref=latest_artifact["id"] if latest_artifact else None,
@@ -201,7 +223,9 @@ class Orchestrator:
             prev_sha = ""
         else:
             # Changed — load prior raw content
-            prev_raw_path = REPO_ROOT / latest_artifact["raw_path"]
+            prev_raw_rel = latest_artifact["raw_path"]
+            # Path may be absolute (test isolation) or relative (production)
+            prev_raw_path = Path(prev_raw_rel) if Path(prev_raw_rel).is_absolute() else REPO_ROOT / prev_raw_rel
             prev_content = prev_raw_path.read_text(encoding="utf-8") if prev_raw_path.exists() else ""
             diff_result = classify(prev_content or None, rf.content)
             change_class = "material" if diff_result.material else "minor"
@@ -211,7 +235,10 @@ class Orchestrator:
         unified_diff_path_rel = None
         if diff_result.unified_diff:
             unified_path = _write_diff(rf.name, prev_sha, rf.sha, diff_result.unified_diff, fetched_at)
-            unified_diff_path_rel = str(unified_path.relative_to(REPO_ROOT))
+            try:
+                unified_diff_path_rel = str(unified_path.relative_to(REPO_ROOT))
+            except ValueError:
+                unified_diff_path_rel = str(unified_path)
 
         severity = severity_from_reasons(diff_result.reasons, diff_result.size_delta_fraction)
         interpretation = _interpret_change(

@@ -12,8 +12,9 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 @pytest.fixture
 def isolated_run(tmp_path, monkeypatch):
-    """Redirect ontology writes AND silence notifications."""
+    """Redirect ontology AND data writes, silence notifications."""
     monkeypatch.setenv("HARNESS_MAP_ONTOLOGY_ROOT", str(tmp_path / "ontology"))
+    monkeypatch.setenv("HARNESS_MAP_DATA_ROOT", str(tmp_path / "data"))
     monkeypatch.delenv("HARNESS_MAP_DISCORD_WEBHOOK", raising=False)
     yield tmp_path
 
