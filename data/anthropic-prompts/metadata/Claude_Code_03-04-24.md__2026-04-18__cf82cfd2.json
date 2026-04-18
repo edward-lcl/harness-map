@@ -1,0 +1,26 @@
+{
+  "fetched_at": "2026-04-18T17:26:55+00:00",
+  "model_hints": [
+    "claude code"
+  ],
+  "raw_line_count": 51,
+  "raw_size_bytes": 1642,
+  "raw_word_count": 264,
+  "safety_rule_count": 4,
+  "section_count": 9,
+  "sections": [
+    "Claude Code System Instructions",
+    "Security Rules",
+    "Slash Commands",
+    "Memory",
+    "Tone and Style",
+    "Proactiveness",
+    "Code Conventions",
+    "Task Process",
+    "Tool Usage"
+  ],
+  "source_url": "https://raw.githubusercontent.com/elder-plinius/CL4R1T4S/main/ANTHROPIC/Claude_Code_03-04-24.md",
+  "surface": "claude-code-03-04-24",
+  "tools_mentioned": [],
+  "upstream_sha": "cf82cfd21cdc3b46012f2a334ea8b983f26b69cd"
+}

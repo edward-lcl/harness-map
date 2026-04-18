@@ -1,0 +1,32 @@
+{
+  "fetched_at": "2026-04-18T17:26:55+00:00",
+  "model_hints": [
+    "claude ",
+    "claude 4",
+    "claude code",
+    "claude-",
+    "design ",
+    "opus 4",
+    "sonnet 4",
+    "sonnet-4"
+  ],
+  "raw_line_count": 369,
+  "raw_size_bytes": 64487,
+  "raw_word_count": 9741,
+  "safety_rule_count": 79,
+  "section_count": 5,
+  "sections": [
+    "Examples of queries that should NEVER result in a search",
+    "Response guidelines",
+    "Use the analysis tool ONLY for",
+    "There are two ways to receive output from the analysis tool",
+    "Using imports in the analysis tool"
+  ],
+  "source_url": "https://raw.githubusercontent.com/elder-plinius/CL4R1T4S/main/ANTHROPIC/Claude_4.txt",
+  "surface": "claude-4",
+  "tools_mentioned": [
+    "query",
+    "you"
+  ],
+  "upstream_sha": "6a2997ae8753d78b1df390d949a7c3d04365d855"
+}

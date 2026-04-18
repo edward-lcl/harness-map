@@ -1,0 +1,45 @@
+{
+  "fetched_at": "2026-04-18T17:26:55+00:00",
+  "model_hints": [
+    "claude ",
+    "claude 4",
+    "claude code",
+    "claude-",
+    "claude-code",
+    "design ",
+    "opus 4.1",
+    "sonnet 4.5",
+    "sonnet-4"
+  ],
+  "raw_line_count": 521,
+  "raw_size_bytes": 85298,
+  "raw_word_count": 13015,
+  "safety_rule_count": 101,
+  "section_count": 15,
+  "sections": [
+    "Always use past chats tools when you see",
+    "Decision framework",
+    "DECISION FRAMEWORK",
+    "RESPONSE GUIDELINES",
+    "CRITICAL NOTES",
+    "YOU MUST ALWAYS USE ARTIFACTS FOR",
+    "USAGE NOTES",
+    "ARTIFACT INSTRUCTIONS",
+    "UPDATING VS REWRITING ARTIFACTS",
+    "ARTIFACT TIPS",
+    "CRITICAL UI REQUIREMENTS",
+    "Examples of queries that should NEVER result in a search",
+    "Response guidelines",
+    "CRITICAL REMINDERS",
+    "READING FILES IN THE ANALYSIS TOOL"
+  ],
+  "source_url": "https://raw.githubusercontent.com/elder-plinius/CL4R1T4S/main/ANTHROPIC/Claude_Sonnet-4.5_Sep-29-2025.txt",
+  "surface": "claude-sonnet-4.5-sep-29-2025",
+  "tools_mentioned": [
+    "default",
+    "query",
+    "use",
+    "you"
+  ],
+  "upstream_sha": "2d60b5017a554766138b5c86fe84e307cf9dec68"
+}

@@ -1,0 +1,22 @@
+{
+  "fetched_at": "2026-04-18T17:26:55+00:00",
+  "model_hints": [
+    "claude ",
+    "claude 3",
+    "claude 3.5",
+    "claude-3.5",
+    "haiku ",
+    "opus ",
+    "sonnet "
+  ],
+  "raw_line_count": 205,
+  "raw_size_bytes": 22967,
+  "raw_word_count": 3542,
+  "safety_rule_count": 11,
+  "section_count": 0,
+  "sections": [],
+  "source_url": "https://raw.githubusercontent.com/elder-plinius/CL4R1T4S/main/ANTHROPIC/Claude_Sonnet_3.5.md",
+  "surface": "claude-sonnet-3.5",
+  "tools_mentioned": [],
+  "upstream_sha": "ca8218fdce53247c2f6f7a980c5b2ee1d51c5004"
+}

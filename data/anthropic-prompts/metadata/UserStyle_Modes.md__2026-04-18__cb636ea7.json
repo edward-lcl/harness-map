@@ -1,0 +1,20 @@
+{
+  "fetched_at": "2026-04-18T17:26:55+00:00",
+  "model_hints": [
+    "claude "
+  ],
+  "raw_line_count": 15,
+  "raw_size_bytes": 3749,
+  "raw_word_count": 566,
+  "safety_rule_count": 0,
+  "section_count": 3,
+  "sections": [
+    "Explanatory Mode",
+    "Formal Mode",
+    "Concise Mode"
+  ],
+  "source_url": "https://raw.githubusercontent.com/elder-plinius/CL4R1T4S/main/ANTHROPIC/UserStyle_Modes.md",
+  "surface": "userstyle-modes",
+  "tools_mentioned": [],
+  "upstream_sha": "cb636ea779ad55f733f6f60d69460f7d23262904"
+}

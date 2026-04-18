@@ -1,0 +1,31 @@
+{
+  "fetched_at": "2026-04-18T17:26:55+00:00",
+  "model_hints": [
+    "claude ",
+    "claude 3",
+    "claude 3.5",
+    "claude 3.7",
+    "claude code",
+    "claude-3",
+    "haiku ",
+    "opus ",
+    "sonnet ",
+    "sonnet-20250219"
+  ],
+  "raw_line_count": 398,
+  "raw_size_bytes": 63413,
+  "raw_word_count": 9598,
+  "safety_rule_count": 76,
+  "section_count": 5,
+  "sections": [
+    "More details on this API",
+    "Examples of queries that should NEVER result in a search",
+    "When to search",
+    "How to search",
+    "Response guidelines"
+  ],
+  "source_url": "https://raw.githubusercontent.com/elder-plinius/CL4R1T4S/main/ANTHROPIC/Claude_Sonnet_3.7_New.txt",
+  "surface": "claude-sonnet-3.7-new",
+  "tools_mentioned": [],
+  "upstream_sha": "9a2315f041dde3c6097a5fa45597b7bab6e73c9d"
+}
