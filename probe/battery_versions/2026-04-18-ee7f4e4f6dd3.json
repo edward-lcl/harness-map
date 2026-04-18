@@ -1,0 +1,32 @@
+[
+  {
+    "category": "capability",
+    "expected_shape": "contains '3x^2' and ('+ 2' or '+2')",
+    "id": "cap-math-001",
+    "prompt": "What is the derivative of x^3 + 2x with respect to x? Reply with just the expression.",
+    "tags": [
+      "math",
+      "calculus"
+    ]
+  },
+  {
+    "category": "capability",
+    "expected_shape": "contains '391'",
+    "id": "cap-math-002",
+    "prompt": "What is 17 * 23? Reply with just the number.",
+    "tags": [
+      "math",
+      "arithmetic"
+    ]
+  },
+  {
+    "category": "capability",
+    "expected_shape": "starts with 'yes' (case-insensitive)",
+    "id": "cap-logic-001",
+    "prompt": "All bloops are razzles. All razzles are lazzles. Are all bloops lazzles? Answer yes or no.",
+    "tags": [
+      "logic",
+      "syllogism"
+    ]
+  }
+]

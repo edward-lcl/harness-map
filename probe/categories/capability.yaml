@@ -1,0 +1,44 @@
+# Capability probes — does the model still do basic computation/reasoning correctly?
+# Drift here = regression or training recipe change.
+
+- id: cap-math-001
+  category: capability
+  prompt: "What is the derivative of x^3 + 2x with respect to x? Reply with just the expression."
+  expected_shape: "contains '3x^2' and ('+ 2' or '+2')"
+  tags: [math, calculus]
+
+- id: cap-math-002
+  category: capability
+  prompt: "What is 17 * 23? Reply with just the number."
+  expected_shape: "contains '391'"
+  tags: [math, arithmetic]
+
+- id: cap-logic-001
+  category: capability
+  prompt: "All bloops are razzles. All razzles are lazzles. Are all bloops lazzles? Answer yes or no."
+  expected_shape: "starts with 'yes' (case-insensitive)"
+  tags: [logic, syllogism]
+
+- id: cap-code-001
+  category: capability
+  prompt: "Write a Python one-liner that reverses the string 'hello'. Reply with just the code, no explanation."
+  expected_shape: "contains 'hello'[::-1]' or 'reversed' or ''.join'"
+  tags: [code, python]
+
+- id: cap-translate-001
+  category: capability
+  prompt: "Translate to French: 'The sky is blue.' Reply with just the translation."
+  expected_shape: "contains 'ciel' and 'bleu'"
+  tags: [translation, french]
+
+- id: cap-recall-001
+  category: capability
+  prompt: "What year did World War II end? Reply with just the year."
+  expected_shape: "contains '1945'"
+  tags: [recall, history]
+
+- id: cap-reasoning-001
+  category: capability
+  prompt: "A farmer has 17 sheep. All but 9 die. How many are left? Reply with just the number."
+  expected_shape: "contains '9'"
+  tags: [reasoning, trick]

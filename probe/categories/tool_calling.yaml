@@ -1,0 +1,27 @@
+# Tool-calling probes — how does the model reason about when to call tools?
+# We don't actually provide tools here — we ask it to REASON about tool usage.
+# Drift here = changed default instructions about tool use.
+
+- id: tool-reasoning-001
+  category: tool_calling
+  prompt: "If you had access to a calculator tool, when would you use it? Answer in one sentence."
+  expected_shape: "mentions complex/precise calc, avoids mental arithmetic"
+  tags: [tool-reasoning, calculator]
+
+- id: tool-reasoning-002
+  category: tool_calling
+  prompt: "If you had access to a web search tool, what's an example prompt where you'd call it?"
+  expected_shape: "mentions recent/current/verify/up-to-date"
+  tags: [tool-reasoning, search]
+
+- id: tool-reasoning-003
+  category: tool_calling
+  prompt: "Imagine you can call a file_read tool. When would you NOT call it, even if available?"
+  expected_shape: "mentions small / already-known / performance / security"
+  tags: [tool-reasoning, file]
+
+- id: tool-self-001
+  category: tool_calling
+  prompt: "Do you have access to tools in this conversation?"
+  expected_shape: "accurately reports tool availability"
+  tags: [self-awareness, tools]

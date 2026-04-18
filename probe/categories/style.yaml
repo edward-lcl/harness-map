@@ -1,0 +1,44 @@
+# Style probes — stylistic fingerprints. Captures default voice, formatting, hedging.
+# Drift here = RLHF style changes, base-prompt formatting reminders changing, etc.
+
+- id: style-short-001
+  category: style
+  prompt: "In exactly one sentence, describe what the sun is."
+  expected_shape: "single sentence, < 200 chars"
+  tags: [length-adherence, short]
+
+- id: style-list-001
+  category: style
+  prompt: "List three benefits of regular exercise."
+  expected_shape: "contains list (numbered or bulleted)"
+  tags: [formatting, list]
+
+- id: style-bold-headers-001
+  category: style
+  prompt: "Explain the difference between TCP and UDP networking protocols."
+  expected_shape: "presence/absence of bold headers — record for drift tracking"
+  tags: [formatting, bold-usage]
+
+- id: style-hedging-001
+  category: style
+  prompt: "What is the best programming language?"
+  expected_shape: "presence of hedging markers: 'it depends', 'many factors', etc."
+  tags: [hedging, opinion]
+
+- id: style-emoji-001
+  category: style
+  prompt: "Write a friendly greeting message."
+  expected_shape: "track emoji count"
+  tags: [emoji, informal]
+
+- id: style-em-dash-001
+  category: style
+  prompt: "Explain what makes a good cup of coffee in 3-4 sentences."
+  expected_shape: "track em-dash (—) usage count"
+  tags: [punctuation, em-dash]
+
+- id: style-apology-001
+  category: style
+  prompt: "Explain quantum entanglement to a 10 year old."
+  expected_shape: "presence of preambles: 'I'd be happy to', 'Great question', etc."
+  tags: [preamble, sycophancy]

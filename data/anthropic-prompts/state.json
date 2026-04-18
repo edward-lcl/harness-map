@@ -1,56 +1,56 @@
 {
   "Claude-4.1.txt": {
-    "last_seen": "2026-04-18T17:58:51+00:00",
+    "last_seen": "2026-04-18T18:00:03+00:00",
     "raw_path": "data/anthropic-prompts/raw/Claude-4.1.txt__2026-04-18__7657d6a9",
     "sha": "7657d6a946ad41139c7c612d89606e55d7797de4"
   },
   "Claude-4.5-Opus.txt": {
-    "last_seen": "2026-04-18T17:58:51+00:00",
+    "last_seen": "2026-04-18T18:00:03+00:00",
     "raw_path": "data/anthropic-prompts/raw/Claude-4.5-Opus.txt__2026-04-18__4dbf5b88",
     "sha": "4dbf5b884114c23cc3264855ddd5e41060744a9a"
   },
   "Claude-Design-Sys-Prompt.txt": {
-    "last_seen": "2026-04-18T17:58:51+00:00",
+    "last_seen": "2026-04-18T18:00:03+00:00",
     "raw_path": "data/anthropic-prompts/raw/Claude-Design-Sys-Prompt.txt__2026-04-18__cd4e3c57",
     "sha": "cd4e3c57794211fbd46b0e1479032eb43d54e24f"
   },
   "Claude-Opus-4.7.txt": {
-    "last_seen": "2026-04-18T17:58:51+00:00",
+    "last_seen": "2026-04-18T18:00:03+00:00",
     "raw_path": "data/anthropic-prompts/raw/Claude-Opus-4.7.txt__2026-04-18__f6033b0b",
     "sha": "f6033b0b8221550a323218e4b9eacb20fbc3f8ff"
   },
   "Claude_4.txt": {
-    "last_seen": "2026-04-18T17:58:51+00:00",
+    "last_seen": "2026-04-18T18:00:03+00:00",
     "raw_path": "data/anthropic-prompts/raw/Claude_4.txt__2026-04-18__6a2997ae",
     "sha": "6a2997ae8753d78b1df390d949a7c3d04365d855"
   },
   "Claude_Code_03-04-24.md": {
-    "last_seen": "2026-04-18T17:58:51+00:00",
+    "last_seen": "2026-04-18T18:00:03+00:00",
     "raw_path": "data/anthropic-prompts/raw/Claude_Code_03-04-24.md__2026-04-18__cf82cfd2",
     "sha": "cf82cfd21cdc3b46012f2a334ea8b983f26b69cd"
   },
   "Claude_Opus_4.6.txt": {
-    "last_seen": "2026-04-18T17:58:51+00:00",
+    "last_seen": "2026-04-18T18:00:03+00:00",
     "raw_path": "data/anthropic-prompts/raw/Claude_Opus_4.6.txt__2026-04-18__83ee31c2",
     "sha": "83ee31c2f1eaa9c6847bd87a0f1d85128ceee859"
   },
   "Claude_Sonnet-4.5_Sep-29-2025.txt": {
-    "last_seen": "2026-04-18T17:58:51+00:00",
+    "last_seen": "2026-04-18T18:00:03+00:00",
     "raw_path": "data/anthropic-prompts/raw/Claude_Sonnet-4.5_Sep-29-2025.txt__2026-04-18__2d60b501",
     "sha": "2d60b5017a554766138b5c86fe84e307cf9dec68"
   },
   "Claude_Sonnet_3.5.md": {
-    "last_seen": "2026-04-18T17:58:51+00:00",
+    "last_seen": "2026-04-18T18:00:03+00:00",
     "raw_path": "data/anthropic-prompts/raw/Claude_Sonnet_3.5.md__2026-04-18__ca8218fd",
     "sha": "ca8218fdce53247c2f6f7a980c5b2ee1d51c5004"
   },
   "Claude_Sonnet_3.7_New.txt": {
-    "last_seen": "2026-04-18T17:58:51+00:00",
+    "last_seen": "2026-04-18T18:00:03+00:00",
     "raw_path": "data/anthropic-prompts/raw/Claude_Sonnet_3.7_New.txt__2026-04-18__9a2315f0",
     "sha": "9a2315f041dde3c6097a5fa45597b7bab6e73c9d"
   },
   "UserStyle_Modes.md": {
-    "last_seen": "2026-04-18T17:58:51+00:00",
+    "last_seen": "2026-04-18T18:00:03+00:00",
     "raw_path": "data/anthropic-prompts/raw/UserStyle_Modes.md__2026-04-18__cb636ea7",
     "sha": "cb636ea779ad55f733f6f60d69460f7d23262904"
   }
