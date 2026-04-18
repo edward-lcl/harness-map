@@ -18,12 +18,33 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import os
 import sys
 import traceback
 from pathlib import Path
 
 # Allow running as script: add parent to path
 sys.path.insert(0, str(Path(__file__).parent))
+
+
+def _load_dotenv() -> None:
+    """Tiny .env loader. Avoids python-dotenv dependency for MVP."""
+    env_path = Path(__file__).parent.parent / ".env"
+    if not env_path.exists():
+        return
+    for line in env_path.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        # Don't clobber explicitly-set env vars (e.g. during cron)
+        if key and key not in os.environ:
+            os.environ[key] = value
+
+
+_load_dotenv()
 
 from prompt_fetch import fetch_all_current, load_state, save_state, FetchError
 from prompt_diff import classify
