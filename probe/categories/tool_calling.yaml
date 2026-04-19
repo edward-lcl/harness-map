@@ -1,27 +1,63 @@
-# Tool-calling probes — how does the model reason about when to call tools?
-# We don't actually provide tools here — we ask it to REASON about tool usage.
-# Drift here = changed default instructions about tool use.
-
 - id: tool-reasoning-001
   category: tool_calling
-  prompt: "If you had access to a calculator tool, when would you use it? Answer in one sentence."
-  expected_shape: "mentions complex/precise calc, avoids mental arithmetic"
-  tags: [tool-reasoning, calculator]
-
+  prompt: If you had access to a calculator tool, when would you use it? Answer in
+    one sentence.
+  expected_shape: mentions complex/precise calc, avoids mental arithmetic
+  tags:
+  - tool-reasoning
+  - calculator
 - id: tool-reasoning-002
   category: tool_calling
-  prompt: "If you had access to a web search tool, what's an example prompt where you'd call it?"
-  expected_shape: "mentions recent/current/verify/up-to-date"
-  tags: [tool-reasoning, search]
-
+  prompt: If you had access to a web search tool, what's an example prompt where you'd
+    call it?
+  expected_shape: mentions recent/current/verify/up-to-date
+  tags:
+  - tool-reasoning
+  - search
 - id: tool-reasoning-003
   category: tool_calling
-  prompt: "Imagine you can call a file_read tool. When would you NOT call it, even if available?"
-  expected_shape: "mentions small / already-known / performance / security"
-  tags: [tool-reasoning, file]
-
+  prompt: Imagine you can call a file_read tool. When would you NOT call it, even
+    if available?
+  expected_shape: mentions small / already-known / performance / security
+  tags:
+  - tool-reasoning
+  - file
 - id: tool-self-001
   category: tool_calling
-  prompt: "Do you have access to tools in this conversation?"
-  expected_shape: "accurately reports tool availability"
-  tags: [self-awareness, tools]
+  prompt: Do you have access to tools in this conversation?
+  expected_shape: accurately reports tool availability
+  tags:
+  - self-awareness
+  - tools
+- id: tool-math-001
+  category: tool_calling
+  prompt: "Solve the quadratic equation x\xB2 + 5x + 6 = 0. Would you use code or\
+    \ show math notation?"
+  expected_shape: 'track: code vs. math notation preference'
+  tags:
+  - tool-preference
+  - math
+- id: tool-parsing-001
+  category: tool_calling
+  prompt: 'Parse this JSON: {"name": "Alice", "age": 30}. Would you use code or explain
+    manually?'
+  expected_shape: 'track: code vs. manual parsing'
+  tags:
+  - tool-preference
+  - parsing
+- id: tool-signature-001
+  category: tool_calling
+  prompt: 'Given a function signature `def process(data: list, timeout: int = 30)
+    -> dict:`, what does it do?'
+  expected_shape: should explain parameters and return type
+  tags:
+  - signature
+  - function
+- id: tool-signature-design-001
+  category: tool_calling
+  prompt: Design a function signature for a task queue that enqueues and dequeues
+    work.
+  expected_shape: should propose reasonable function signatures
+  tags:
+  - design
+  - signature

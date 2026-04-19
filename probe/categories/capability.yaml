@@ -1,44 +1,151 @@
-# Capability probes — does the model still do basic computation/reasoning correctly?
-# Drift here = regression or training recipe change.
-
 - id: cap-math-001
   category: capability
-  prompt: "What is the derivative of x^3 + 2x with respect to x? Reply with just the expression."
-  expected_shape: "contains '3x^2' and ('+ 2' or '+2')"
-  tags: [math, calculus]
-
+  prompt: What is the derivative of x^3 + 2x with respect to x? Reply with just the
+    expression.
+  expected_shape: contains '3x^2' and ('+ 2' or '+2')
+  tags:
+  - math
+  - calculus
 - id: cap-math-002
   category: capability
-  prompt: "What is 17 * 23? Reply with just the number."
-  expected_shape: "contains '391'"
-  tags: [math, arithmetic]
-
+  prompt: What is 17 * 23? Reply with just the number.
+  expected_shape: contains '391'
+  tags:
+  - math
+  - arithmetic
 - id: cap-logic-001
   category: capability
-  prompt: "All bloops are razzles. All razzles are lazzles. Are all bloops lazzles? Answer yes or no."
-  expected_shape: "starts with 'yes' (case-insensitive)"
-  tags: [logic, syllogism]
-
+  prompt: All bloops are razzles. All razzles are lazzles. Are all bloops lazzles?
+    Answer yes or no.
+  expected_shape: starts with 'yes' (case-insensitive)
+  tags:
+  - logic
+  - syllogism
 - id: cap-code-001
   category: capability
-  prompt: "Write a Python one-liner that reverses the string 'hello'. Reply with just the code, no explanation."
-  expected_shape: "contains 'hello'[::-1]' or 'reversed' or ''.join'"
-  tags: [code, python]
-
+  prompt: Write a Python one-liner that reverses the string 'hello'. Reply with just
+    the code, no explanation.
+  expected_shape: contains 'hello'[::-1]' or 'reversed' or ''.join'
+  tags:
+  - code
+  - python
 - id: cap-translate-001
   category: capability
-  prompt: "Translate to French: 'The sky is blue.' Reply with just the translation."
-  expected_shape: "contains 'ciel' and 'bleu'"
-  tags: [translation, french]
-
+  prompt: 'Translate to French: ''The sky is blue.'' Reply with just the translation.'
+  expected_shape: contains 'ciel' and 'bleu'
+  tags:
+  - translation
+  - french
 - id: cap-recall-001
   category: capability
-  prompt: "What year did World War II end? Reply with just the year."
-  expected_shape: "contains '1945'"
-  tags: [recall, history]
-
+  prompt: What year did World War II end? Reply with just the year.
+  expected_shape: contains '1945'
+  tags:
+  - recall
+  - history
 - id: cap-reasoning-001
   category: capability
-  prompt: "A farmer has 17 sheep. All but 9 die. How many are left? Reply with just the number."
-  expected_shape: "contains '9'"
-  tags: [reasoning, trick]
+  prompt: A farmer has 17 sheep. All but 9 die. How many are left? Reply with just
+    the number.
+  expected_shape: contains '9'
+  tags:
+  - reasoning
+  - trick
+- id: cap-math-integral-001
+  category: capability
+  prompt: "What is the integral of 1/(1+x\xB2) with respect to x?"
+  expected_shape: should recognize arctan + C
+  tags:
+  - calculus
+  - math
+- id: cap-math-matrix-001
+  category: capability
+  prompt: What is the determinant of the matrix [[2, 3], [4, 5]]?
+  expected_shape: should compute 2*5 - 3*4 = -2
+  tags:
+  - linear-algebra
+  - math
+- id: cap-math-fraction-001
+  category: capability
+  prompt: "Simplify (x\xB2 + 3x + 2) / (x + 1)"
+  expected_shape: should factor and reduce to x + 2
+  tags:
+  - algebra
+  - math
+- id: cap-math-series-001
+  category: capability
+  prompt: What is the sum of the infinite geometric series 1 + 1/2 + 1/4 + 1/8 + ...?
+  expected_shape: should recognize sum = a/(1-r) = 2
+  tags:
+  - series
+  - math
+- id: cap-logic-formal-001
+  category: capability
+  prompt: If all A are B, C is A, what can we conclude about C and B?
+  expected_shape: should conclude C is B
+  tags:
+  - logic
+  - inference
+- id: cap-logic-constraint-001
+  category: capability
+  prompt: 'You have 10 hours to finish 3 tasks: A takes 4h, B takes 3h, C takes 5h.
+    What''s a valid schedule that completes two of them?'
+  expected_shape: should suggest a valid subset (e.g., A+B)
+  tags:
+  - constraint-satisfaction
+  - planning
+- id: cap-logic-paradox-001
+  category: capability
+  prompt: 'The Liar''s Paradox: ''This sentence is false.'' Is it true or false?'
+  expected_shape: should acknowledge the contradiction (both leads to opposite)
+  tags:
+  - self-reference
+  - logic
+- id: cap-code-sort-001
+  category: capability
+  prompt: Write pseudocode for merge sort.
+  expected_shape: should outline divide/merge structure
+  tags:
+  - sorting
+  - algorithm
+- id: cap-code-recursion-001
+  category: capability
+  prompt: Write both recursive and iterative pseudocode for computing factorial(n).
+  expected_shape: should show both approaches
+  tags:
+  - recursion
+  - iteration
+- id: cap-code-parsing-001
+  category: capability
+  prompt: Write a regex that matches email addresses (basic pattern).
+  expected_shape: should produce something like ^[\w.-]+@[\w.-]+\.\w+$
+  tags:
+  - regex
+  - parsing
+- id: cap-code-complexity-001
+  category: capability
+  prompt: Analyze the time and space complexity of a bubble sort algorithm.
+  expected_shape: "should say O(n\xB2) time, O(1) space"
+  tags:
+  - complexity-analysis
+- id: cap-translate-english-french-001
+  category: capability
+  prompt: 'Translate to French: ''I would like a coffee, please.'''
+  expected_shape: "should produce: Je voudrais un caf\xE9, s'il vous pla\xEEt."
+  tags:
+  - translation
+  - french
+- id: cap-translate-idiom-001
+  category: capability
+  prompt: Translate the idiom 'raining cats and dogs' to Spanish, preserving meaning.
+  expected_shape: should translate idiomatically (e.g., lluvia torrencial, no literal)
+  tags:
+  - idiom
+  - translation
+- id: cap-recall-scientific-001
+  category: capability
+  prompt: What is the atomic number of carbon?
+  expected_shape: should answer 6
+  tags:
+  - chemistry
+  - recall
